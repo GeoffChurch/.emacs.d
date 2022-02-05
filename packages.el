@@ -1,5 +1,9 @@
 ;; Sets up general package loading/management.
 
+;; Fixes "Bad request" package download issues.
+(if (and (version< emacs-version "26.3") (>= libgnutls-version 30604))
+    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+
 ;; This sets up 'package and adds MELPA (copied from https://melpa.org/#/getting-started).
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))

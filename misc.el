@@ -15,10 +15,15 @@
 
 ;; optionally
 ;; (use-package helm)
-(use-package lsp-mode)
+(use-package lsp-mode
+  :init (setq lsp-keymap-prefix "C-l"))
 (use-package lsp-ui :commands lsp-ui-mode)
 ;; TODO make sure this works:
 ;; (use-package helm-lsp
 ;;   :commands helm-lsp-workspace-symbol
 ;;   :bind ([remap xref-find-apropos] . helm-lsp-workspace-symbol))
 ;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; Use same PATH as shell.
+(use-package exec-path-from-shell)
+(exec-path-from-shell-initialize)
