@@ -12,6 +12,39 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
+
+(desktop-save-mode)
+(savehist-mode)
+
+(setq auto-save-default nil)
+(setq make-backup-files nil)
+
+(setq inhibit-startup-screen t)
+(setq initial-major-mode 'fundamental-mode)
+(setq initial-scratch-message "")
+(set-face-attribute 'default nil :height 160)
+
+;; ;; Use same PATH as shell.
+;; (use-package exec-path-from-shell)
+;; (exec-path-from-shell-initialize)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(tsdh-light))
+ '(fringe-mode 0 nil (fringe))
+ '(lsp-headerline-breadcrumb-enable nil)
+ '(menu-bar-mode nil)
+ '(scroll-bar-mode nil)
+ '(tool-bar-mode nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
 ;; Bootstrap straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -102,24 +135,26 @@
     :multi-root t
     :server-id 'prolog-ls))
   :hook
-  ((prolog-mode . lsp))
+  ((prolog-mode . lsp)   ;; $ swipl -t "pack_install(lsp_server)"
+   (haskell-mode . lsp)) ;; $ ghcup install hls
   )
 
 (use-package lsp-ui)
+;; (use-package lsp-treemacs)
 
-(with-eval-after-load 'lsp-mode
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection
-    (lsp-stdio-connection (list "swipl"
-				"-g" "use_module(library(lsp_server))."
-				"-g" "lsp_server:main"
-				"-t" "halt"
-				"--" "stdio"))
-    :major-modes '(prolog-mode)
-    :priority 1
-    :multi-root t
-    :server-id 'prolog-ls)))
+;; (with-eval-after-load 'lsp-mode
+;;   (lsp-register-client
+;;    (make-lsp-client
+;;     :new-connection
+;;     (lsp-stdio-connection (list "swipl"
+;; 				"-g" "use_module(library(lsp_server))."
+;; 				"-g" "lsp_server:main"
+;; 				"-t" "halt"
+;; 				"--" "stdio"))
+;;     :major-modes '(prolog-mode)
+;;     :priority 1
+;;     :multi-root t
+;;     :server-id 'prolog-ls)))
 
 (use-package company
   :custom
@@ -133,23 +168,16 @@
   (bind-key "C-r" 'vr/isearch-backward)
   (bind-key "C-S-s" 'vr/replace))
 
+(use-package haskell-mode)
+
+(use-package lean4-mode
+  :straight (lean4-mode
+	     :type git
+	     :host github
+	     :repo "leanprover/lean4-mode"
+	     :files ("*.el" "data"))
+  ;; to defer loading the package until required
+  :commands (lean4-mode))
+
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
-(desktop-save-mode)
-(savehist-mode)
-
-(setq auto-save-default nil)
-(setq make-backup-files nil)
-
-(setq inhibit-startup-screen t)
-(setq initial-major-mode 'fundamental-mode)
-(setq initial-scratch-message "")
-(fringe-mode 0)
-(menu-bar-mode -1)
-(toggle-scroll-bar -1)
-(tool-bar-mode -1)
-(set-face-attribute 'default nil :height 160)
-
-;; ;; Use same PATH as shell.
-;; (use-package exec-path-from-shell)
-;; (exec-path-from-shell-initialize)
